@@ -9,53 +9,44 @@ OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 if not OPENAI_API_KEY:
     st.error("OpenAI API key is missing. Please set the OPENAI_API_KEY environment variable.")
 
-# Function to generate a structured lesson plan for teaching place value
+# Function to generate a structured lesson plan for place value
 
-def generate_place_value_lesson():
-    stages = [
-        {
-            "story": "The adventurers find an ancient scroll that speaks about numbers having 'homes.'",
-            "concept": "Understanding Ones, Tens, Hundreds as 'Homes'.",
-            "discussion_prompts": [
-                "What do you think it means for a number to have a home?",
-                "Why do we need different places for numbers?"
-            ],
-            "hands_on_activity": "Kids place number blocks in drawn columns (e.g., house = ones, next house = tens, etc.).",
-            "canva_prompt": (
-                "🎨 **Canva Image Prompt - Stage 1: Place Value Homes**\n"
-                "------------------------------------------------------------\n"
-                "1️⃣ **Scene:** The adventurers find a scroll showing how numbers live in different 'homes'.\n"
-                "2️⃣ **What to Include:**\n"
-                "   - A fun village with three houses labeled Ones, Tens, Hundreds.\n"
-                "   - Number blocks floating, waiting to be placed in their homes.\n"
-                "3️⃣ **Technical Details:**\n"
-                "   - **Size:** 1024x1024 pixels\n"
-                "   - **Format:** PNG\n"
-                "   - **No Watermarks**\n"
-            )
-        },
-        {
-            "story": "They approach a magic gate that will only open if numbers are placed correctly.",
-            "concept": "Identifying Place Value (Ones vs. Tens)",
-            "discussion_prompts": [
-                "What happens if we put a number in the wrong place?",
-                "Can you think of a real-life example where place matters?"
-            ],
-            "hands_on_activity": "Drag or manually write numbers in correct columns.",
-            "canva_prompt": (
-                "🎨 **Canva Image Prompt - Stage 2: Magic Gate of Place Value**\n"
-                "------------------------------------------------------------\n"
-                "1️⃣ **Scene:** The adventurers face a magic gate that requires numbers in the correct place to open.\n"
-                "2️⃣ **What to Include:**\n"
-                "   - A mystical gate with slots labeled 'Tens' and 'Ones'.\n"
-                "   - A glowing lock mechanism to indicate a puzzle to solve.\n"
-                "3️⃣ **Technical Details:**\n"
-                "   - **Size:** 1024x1024 pixels\n"
-                "   - **Format:** PNG\n"
-                "   - **No Watermarks**\n"
-            )
-        }
+def generate_place_value_lesson(difficulty):
+    stages = []
+    learning_progression = [
+        ("Understanding Ones, Tens, Hundreds", "Numbers live in homes: ones, tens, and hundreds."),
+        ("Identifying Place Value", "Recognizing which digit represents ones, tens, or hundreds."),
+        ("Grouping into Tens", "Understanding that 10 ones make a ten."),
+        ("Skip Counting by Tens", "Counting by 10s to understand number patterns."),
+        ("Breaking Numbers into Expanded Form", "Representing 345 as 300 + 40 + 5."),
+        ("Comparing Numbers", "Understanding which numbers are greater using place value."),
+        ("Building 4-digit Numbers", "Introducing thousands and how they relate to hundreds."),
+        ("Adding with Place Value", "Adding numbers by breaking them into place values."),
+        ("Subtracting with Place Value", "Using place value knowledge to subtract numbers."),
+        ("Real-World Applications", "Using place value in money and measurements."),
     ]
+    for i, (concept, story) in enumerate(learning_progression, start=1):
+        stages.append({
+            "story": f"Stage {i}: {story}",
+            "concept": concept,
+            "discussion_prompts": [
+                f"How does this concept help us with numbers?",
+                "Can you think of a real-world example?"
+            ],
+            "hands_on_activity": "Use manipulatives or drawings to explore the concept.",
+            "canva_prompt": (
+                f"🎨 **Canva Image Prompt - Stage {i}: {concept}**\n"
+                "------------------------------------------------------------\n"
+                f"1️⃣ **Scene:** The adventurers must solve a puzzle related to {concept}.\n"
+                "2️⃣ **What to Include:**\n"
+                "   - Characters engaging with the math concept in a fun way.\n"
+                "   - Clear, labeled objects to help visualize {concept}.\n"
+                "3️⃣ **Technical Details:**\n"
+                "   - **Size:** 1024x1024 pixels\n"
+                "   - **Format:** PNG\n"
+                "   - **No Watermarks**\n"
+            )
+        })
     return {"stages": stages}
 
 # Streamlit App
@@ -63,8 +54,9 @@ st.set_page_config(page_title="Math Club Lesson Generator", layout="wide")
 
 # Sidebar for Teacher Inputs
 st.sidebar.header("Generate Place Value Lesson")
+lesson_difficulty = st.sidebar.selectbox("Select Difficulty Level", ["Basic", "Intermediate", "Advanced"])
 if st.sidebar.button("Generate Full Lesson"):
-    generated_data = generate_place_value_lesson()
+    generated_data = generate_place_value_lesson(lesson_difficulty)
     st.session_state["lesson_data"] = generated_data
     st.session_state["uploaded_images"] = {}
 

@@ -1,35 +1,53 @@
 import streamlit as st
 import json
-from openai import OpenAI
+import openai
+import os
 
-# Placeholder function for generating lesson script & Canva prompts using OpenAI
-# Replace with actual OpenAI API integration
+# Load OpenAI API Key from environment variables
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+
+if not OPENAI_API_KEY:
+    st.error("OpenAI API key is missing. Please set the OPENAI_API_KEY environment variable.")
+
+# Function to generate a detailed, story-specific Canva prompt
+
+def generate_canva_prompt(lesson_concept, difficulty, stage, story):
+    return (
+        f"🎨 **Canva Image Prompt for {lesson_concept} - Stage {stage}**\n"
+        "------------------------------------------------------------\n"
+        "1️⃣ **Story Context:**\n"
+        f"   - Scene: {story}\n"
+        "2️⃣ **Visual Elements to Include:**\n"
+        "   - Background: The scene should reflect the adventure setting.\n"
+        "   - Key Objects: Represent the core math concept using objects, characters, or symbols.\n"
+        "   - Labels: Clearly mark numbers, doors, or any key interactive parts.\n"
+        "   - Extra Fun Elements: Include engaging elements like an explorer, a talking animal guide, or magical effects.\n"
+        "3️⃣ **Technical Specifications:**\n"
+        "   - **Size:** 1024x1024 pixels for optimal display.\n"
+        "   - **File Format:** PNG for high resolution.\n"
+        "   - **Color Palette:** Bright and engaging for ages 6-10.\n"
+        "   - **Keep High Contrast:** For readability in classroom settings.\n"
+        "   - **No Watermarks:** Ensure a clean, professional look.\n"
+    )
+
+# Placeholder function for generating lesson script
 
 def generate_lesson_script(lesson_concept, difficulty):
     response = {
-        "stages": [
-            {
-                "story": f"Welcome to the adventure of learning {lesson_concept}! Let's start our journey.",
-                "canva_prompt": f"Create an engaging Canva image related to {lesson_concept} with colorful elements suitable for kids.",
-                "discussion_prompts": [
-                    "What do you think about this topic?",
-                    "Can you find an example in real life?"
-                ],
-                "hands_on_activity": "Use manipulatives or drawings to explore this concept.",
-                "hints": "Think about how numbers relate to real objects."
-            },
-            {
-                "story": f"Now, let's dive deeper into {lesson_concept}! What happens next?",
-                "canva_prompt": f"Create an advanced visual on Canva showcasing the next step of {lesson_concept}.",
-                "discussion_prompts": [
-                    "How does this connect to what we just learned?",
-                    "Can you explain this in your own words?"
-                ],
-                "hands_on_activity": "Work in pairs to demonstrate the concept.",
-                "hints": "Break the problem into smaller steps."
-            }
-        ]
+        "stages": []
     }
+    for stage in range(1, 4):  # Example: 3 stages
+        story_text = f"Welcome to {lesson_concept}! Stage {stage} presents a new challenge where we must solve a puzzle to move forward."
+        response["stages"].append({
+            "story": story_text,
+            "canva_prompt": generate_canva_prompt(lesson_concept, difficulty, stage, story_text),
+            "discussion_prompts": [
+                f"How does {lesson_concept} apply here?",
+                "Can you explain this in your own words?"
+            ],
+            "hands_on_activity": "Use manipulatives or drawings to explore this concept.",
+            "hints": "Break the problem into smaller steps."
+        })
     return response
 
 # Streamlit App

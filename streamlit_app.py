@@ -92,6 +92,7 @@ if "lesson_data" in st.session_state and "current_stage" in st.session_state:
     uploaded_file = st.file_uploader("Upload Canva Image for this Stage", type=["png", "jpg"])
     if uploaded_file is not None:
         st.session_state["uploaded_images"][current_stage] = uploaded_file
+        st.image(uploaded_file, caption=f"Uploaded Image for Stage {current_stage + 1}", use_column_width=True)
         st.success("Image uploaded successfully!")
     
     # Navigation Buttons
